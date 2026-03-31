@@ -4,7 +4,7 @@ Aplicação web para geração de imagens de gatinhos, desenvolvida com foco em 
 
 ---
 
-## 📌 Sobre o projeto
+## Sobre o projeto
 
 O **CatLab** é uma aplicação voltada à geração de imagens de gatos, criada com o objetivo de aplicar conceitos modernos de desenvolvimento front-end, organização de código e boas práticas de programação e engenharia de software.
 
@@ -12,7 +12,7 @@ Este projeto também serve como base para experimentação com diferentes framew
 
 ---
 
-## 📂 Estrutura do projeto
+## Estrutura do projeto
 
 ```bash
 /
@@ -24,7 +24,7 @@ Este projeto também serve como base para experimentação com diferentes framew
 
 ---
 
-## 🎯 Objetivo
+## Objetivo
 
 * Demonstrar habilidades em desenvolvimento front-end
 * Explorar diferentes frameworks (React e Angular)
@@ -33,13 +33,7 @@ Este projeto também serve como base para experimentação com diferentes framew
 
 ---
 
-## 🚀 Status do projeto
-
-🚧 Em desenvolvimento
-
----
-
-## 🧠 Próximos passos
+## Próximos passos
 
 * Estruturação inicial do front-end em React
 * Implementação da geração de imagens de gatinhos
@@ -49,12 +43,19 @@ Este projeto também serve como base para experimentação com diferentes framew
 
 ---
 
-## 📖 Documentação
+## Documentação
 
 A documentação inicial do projeto está disponível na pasta `_docs`, contendo a análise e definições inicais.
 
 ---
 
-## 📄 Licença
+## Como Rodar o projeto
+
+### Angular
+
+
+### React
+
+## Licença
 
 Este projeto é de uso livre para fins de estudo e aprendizado.
