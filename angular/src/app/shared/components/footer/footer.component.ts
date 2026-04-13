@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
   standalone: true,
   styleUrl: './footer.component.scss',
 })
-export class FooterComponent {}
+export class FooterComponent {
+
+  public anoAtual: number = new Date().getFullYear();
+}

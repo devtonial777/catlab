@@ -1,3 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* Variaveis de cores principais */
+:root {
+  --color-primary: #347bed;
+  --color-secondary: #fabbf2;
+
+  --color-bg: #f9fafb;
+  --color-surface: #ffffff;
+
+  --color-text: #0e131a;
+  --color-text-light: #6b7280;
+
+  --color-border: #e5e7eb;
+}
+
+/* Reset básico */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Estilização global */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+}
+
+/* Layout principal */
+.app-layout {
+  min-height: 100vh;   /* fallback */
+  min-height: 100dvh;  /* mobile moderno */
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+}

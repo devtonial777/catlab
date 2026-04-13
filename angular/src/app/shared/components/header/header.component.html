@@ -1,1 +1,32 @@
-<p>header works!</p>
+<header class="header w-full bg-white shadow-md">
+  <div class="header__container max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+
+    <!-- Logo -->
+    <div class="header__logo flex items-center gap-2 text-2xl font-bold tracking-wide">
+      <img src="/svg/cat.svg" alt="Cat" class="w-10 h-10" />
+      CATLAB
+    </div>
+
+    <!-- Navegação -->
+    <nav class="header__nav hidden md:flex items-center gap-6 text-sm font-medium">
+
+      <a routerLink="/" class="header__link">
+        HOME
+      </a>
+
+      <a routerLink="/sobre" class="header__link">
+        SOBRE
+      </a>
+
+      <a routerLink="/tecnologias" class="header__link">
+        TECNOLOGIAS
+      </a>
+
+      <a href="/doc/Analise_v1.0.pdf" target="_blank" rel="noopener noreferrer nofollow" class="header__link">
+        DOCS
+      </a>
+
+    </nav>
+
+  </div>
+</header>
