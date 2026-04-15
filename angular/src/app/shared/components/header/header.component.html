@@ -2,30 +2,38 @@
   <div class="header__container max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
     <!-- Logo -->
-    <div class="header__logo flex items-center gap-2 text-2xl font-bold tracking-wide">
-      <img src="/svg/cat.svg" alt="Cat" class="w-10 h-10" />
-      CATLAB
+    <div class="flex items-center gap-1 cursor-pointer">
+    	<svg class="header__icon w-10 h-10">
+      	<use href="/svg/icons.svg#icon-cat"></use>
+      </svg>
+
+      <!-- some no mobile -->
+      <span class="hidden md:inline text-2xl font-semibold tracking-wider primary-color">
+        CATLAB
+      </span>
     </div>
 
+    <!-- Botão Mobile -->
+    <button 
+      class="header__toggle md:hidden"
+      (click)="toggleMenu()"
+    >
+      <mat-icon class="primary-color">
+        {{ menuOpen ? 'close' : 'menu' }}
+      </mat-icon>
+    </button>
+
     <!-- Navegação -->
-    <nav class="header__nav hidden md:flex items-center gap-6 text-sm font-medium">
-
-      <a routerLink="/" class="header__link">
-        HOME
-      </a>
-
-      <a routerLink="/sobre" class="header__link">
-        SOBRE
-      </a>
-
-      <a routerLink="/tecnologias" class="header__link">
-        TECNOLOGIAS
-      </a>
-
+    <nav 
+      class="header__nav"
+      [class.header__nav--open]="menuOpen"
+    >
+      <a routerLink="/" (click)="closeMenu()" class="header__link">HOME</a>
+      <a routerLink="/sobre" (click)="closeMenu()" class="header__link">SOBRE</a>
+      <a routerLink="/tecnologias" (click)="closeMenu()" class="header__link">TECNOLOGIAS</a>
       <a href="/doc/Analise_v1.0.pdf" target="_blank" rel="noopener noreferrer nofollow" class="header__link">
         DOCS
       </a>
-
     </nav>
 
   </div>

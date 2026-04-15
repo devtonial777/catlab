@@ -40,3 +40,7 @@ body {
 .app-content {
   flex: 1;
 }
+
+.primary-color {
+  color: var(--color-primary);
+}

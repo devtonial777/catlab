@@ -3,10 +3,18 @@
 
     <!-- Info do projeto -->
     <div class="footer__info flex flex-col gap-2">
-      <span class="footer__title flex items-center gap-2 text-lg font-semibold">
-        <img src="/svg/cat.svg" alt="Cat" class="w-8 h-8" />
-        CATLAB
-      </span>
+      <!-- Logo -->
+      <div class="flex items-center gap-1 cursor-pointer">
+        <svg class="footer__icon w-8 h-8">
+          <use href="/svg/icons.svg#icon-cat"></use>
+        </svg>
+
+        <!-- some no mobile -->
+        <span class="text-lg font-semibold tracking-wider primary-color">
+          CATLAB
+        </span>
+      </div>
+      
       <span class="footer__description text-sm">
         Projeto desenvolvido para estudo e demonstração de habilidades em front-end.
       </span>
@@ -25,6 +33,9 @@
 
   <!-- Bottom -->
   <div class="footer__bottom text-center text-xs py-4">
-    © {{anoAtual}} CATLAB — Desenvolvido por <b>Marcos Tonial</b>
+    © {{anoAtual}} CATLAB — Desenvolvido por 
+    <a href="https://www.linkedin.com/in/marcos-tonialti/" target="_blank" rel="noopener noreferrer" class="footer__link">
+      Marcos Tonial
+    </a>
   </div>
 </footer>

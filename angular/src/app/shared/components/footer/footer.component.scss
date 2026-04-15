@@ -6,6 +6,10 @@
     color: var(--color-primary);
   }
 
+  & .footer__icon {
+    fill: var(--color-secondary);
+  }
+
   & .footer__description {
     color: var(--color-text-light);
   }
@@ -18,6 +22,7 @@
     cursor: pointer;
     color: var(--color-text);
     transition: all 0.2s ease;
+    font-weight: bold;
 
     &:hover {
       color: var(--color-primary);
