@@ -2,10 +2,6 @@
   background-color: var(--color-surface);
   border-top: 1px solid var(--color-border);
 
-  & .footer__title {
-    color: var(--color-primary);
-  }
-
   & .footer__icon {
     fill: var(--color-secondary);
   }
@@ -16,13 +12,24 @@
 
   & .footer__bottom {
     color: var(--color-text-light);
+    text-align: center;
+  }
+
+  /* MOBILE DEFAULT */
+  & .footer__info {
+    align-items: center;
+  }
+
+  & .footer__links {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   & .footer__link {
     cursor: pointer;
     color: var(--color-text);
     transition: all 0.2s ease;
-    font-weight: bold;
+    font-weight: 500;
 
     &:hover {
       color: var(--color-primary);
@@ -30,6 +37,23 @@
       text-decoration-color: var(--color-secondary);
       text-decoration-thickness: 2px;
       text-underline-offset: 4px;
+    }
+  }
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+  .footer {
+    & .footer__info {
+      align-items: flex-start;
+    }
+
+    & .footer__links {
+      justify-content: flex-end;
+    }
+
+    & .footer__bottom {
+      text-align: center; /* pode manter */
     }
   }
 }
