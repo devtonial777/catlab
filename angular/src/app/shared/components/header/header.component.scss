@@ -103,12 +103,12 @@
         color: var(--color-primary);
       }
 
-      /* Underline animado vindo do CENTRO */
+      /* underline animado */
       &::after {
         content: "";
         position: absolute;
         bottom: 0;
-        left: 50%; 
+        left: 50%;
         width: 0;
         height: 2px;
         background-color: var(--color-secondary);
@@ -120,5 +120,14 @@
         width: 100%;
       }
     }
-  } // -- FIM, .header {
+
+    /* ACTIVE = igual hover, porém fixo */
+    & .header__link--active {
+      color: var(--color-primary);
+    }
+
+    & .header__link--active::after {
+      width: 100%;
+    }
+  }
 }

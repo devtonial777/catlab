@@ -1,0 +1,64 @@
+.tech {
+
+  & .tech__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    padding: 1.4rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    transition: all 0.25s ease;
+    cursor: default;
+  }
+
+  & .tech__card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-primary);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+
+		.tech__card:hover .tech__icon {
+			background: var(--color-primary);
+		}
+
+		.tech__card:hover .tech__icon svg {
+			stroke: white;
+		}
+  }
+
+  /* ÍCONE */
+  & .tech__icon {
+    width: 48px;
+  	height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(52, 123, 237, 0.08);
+    border-radius: 10px;
+  }
+
+  & .tech__icon svg {
+    width: 24px;
+    height: 24px;
+
+    fill: var(--color-primary);
+  }
+
+  /* TÍTULO */
+  & .tech__title {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-primary);
+  }
+
+  /* DESCRIÇÃO */
+  & .tech__description {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+    line-height: 1.4;
+  }
+}

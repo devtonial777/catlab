@@ -1,0 +1,31 @@
+<section class="tech max-w-6xl mx-auto px-4 py-10">
+
+  <h1 class="text-2xl font-bold mb-6">
+    Tecnologias
+  </h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+  @for (tech of techs; track tech.title) {
+    <div class="tech__card">
+
+      <div class="tech__icon">
+        <svg>
+          <use [attr.href]="'/svg/icons.svg#icon-' + tech.icon"></use>
+        </svg>
+      </div>
+
+      <h3 class="tech__title">
+        {{ tech.title }}
+      </h3>
+
+      <p class="tech__description">
+        {{ tech.description }}
+      </p>
+
+    </div>
+  }
+
+</div>
+
+</section>

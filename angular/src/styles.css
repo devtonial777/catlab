@@ -20,6 +20,8 @@
 html, body {
   height: 100%;
   margin: 0;
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
 }
 
 /* Estilização global */

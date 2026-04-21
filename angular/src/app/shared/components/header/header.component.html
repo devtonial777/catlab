@@ -28,9 +28,9 @@
       class="header__nav"
       [class.header__nav--open]="menuOpen"
     >
-      <a routerLink="/" (click)="closeMenu()" class="header__link">HOME</a>
-      <a routerLink="/sobre" (click)="closeMenu()" class="header__link">SOBRE</a>
-      <a routerLink="/tecnologias" (click)="closeMenu()" class="header__link">TECNOLOGIAS</a>
+      <a routerLink="/" (click)="closeMenu()" class="header__link" routerLinkActive="header__link--active" [routerLinkActiveOptions]="{ exact: true }">HOME</a>
+      <a routerLink="/sobre" (click)="closeMenu()" class="header__link" routerLinkActive="header__link--active">SOBRE</a>
+      <a routerLink="/tecnologias" (click)="closeMenu()" class="header__link" routerLinkActive="header__link--active">TECNOLOGIAS</a>
       <a href="/doc/Analise_v1.0.pdf" target="_blank" rel="noopener noreferrer nofollow" class="header__link">
         DOCS
       </a>
