@@ -1,0 +1,86 @@
+<section class="home">
+  <div class="home__container">
+
+    <!-- INTRO -->
+    <header class="home__header">
+      <h1 class="home__title">Gerador de Imagens de Gatinhos</h1>
+      <p class="home__subtitle">
+        Gere imagens de gatos de forma simples, rápida e divertida.
+      </p>
+    </header>
+
+    <!-- FORM -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+			<mat-form-field class="home__field" appearance="outline">
+				<mat-label>Texto</mat-label>
+
+				<input
+					matInput
+					type="text"
+					formControlName="texto"
+					maxlength="30"
+					placeholder="Ex: gatinho fofo"
+				/>
+
+				@if (form.get('texto')?.value) {
+					<button
+						matSuffix
+						mat-icon-button
+						type="button"
+						aria-label="Limpar"
+						(click)="limparTexto()"
+					>
+						<mat-icon>close</mat-icon>
+					</button>
+				}
+			</mat-form-field>
+
+      <mat-form-field class="home__field" appearance="outline">
+				<mat-label>Tipo de imagem</mat-label>
+
+				<mat-select formControlName="tipo">
+					<mat-option value="aleatorio">Aleatório</mat-option>
+					<mat-option value="gif">GIF</mat-option>
+					<mat-option value="texto">Texto</mat-option>
+				</mat-select>
+
+			</mat-form-field>
+
+      <button
+        type="submit"
+        class="home__button"
+        [disabled]="isBlocked"
+      >
+        {{ botaoLabel }}
+      </button>
+
+    </form>
+
+    <!-- RESULTADO -->
+    <div class="home__resultado">
+
+      @if (estado === 'inicial') {
+        <div class="home__placeholder">
+          Sua imagem aparecerá aqui
+        </div>
+      }
+
+      @if (estado === 'carregando') {
+        <div class="home__loading">
+          <img src="/gif/loading-cat.gif" alt="Carregando ..." />
+        </div>
+      }
+
+      @if (estado === 'sucesso' || estado === 'cooldown') {
+        <img
+          [src]="imagemUrl"
+          alt="Imagem gerada"
+          class="home__imagem"
+        />
+      }
+
+    </div>
+
+  </div>
+</section>
