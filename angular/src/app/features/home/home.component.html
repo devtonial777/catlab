@@ -1,55 +1,63 @@
 <section class="home">
-  <div class="home__container">
+  <div class="home__container max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8">
 
     <!-- INTRO -->
-    <header class="home__header">
-      <h1 class="home__title">Gerador de Imagens de Gatinhos</h1>
+    <header class="home__header text-center flex flex-col gap-2">
+      <h1 class="home__title">
+        Gerador de Imagens de Gatinhos
+      </h1>
+
       <p class="home__subtitle">
         Gere imagens de gatos de forma simples, rápida e divertida.
       </p>
     </header>
 
     <!-- FORM -->
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form 
+      [formGroup]="form" 
+      (ngSubmit)="onSubmit()"
+      class="home__form flex flex-col gap-4"
+    >
 
-			<mat-form-field class="home__field" appearance="outline">
-				<mat-label>Texto</mat-label>
+      <!-- TEXTO -->
+      <mat-form-field class="home__field w-full" appearance="outline">
+        <mat-label>Texto</mat-label>
 
-				<input
-					matInput
-					type="text"
-					formControlName="texto"
-					maxlength="30"
-					placeholder="Ex: gatinho fofo"
-				/>
+        <input
+          matInput
+          type="text"
+          formControlName="texto"
+          maxlength="30"
+          placeholder="Ex: gatinho fofo"
+        />
 
-				@if (form.get('texto')?.value) {
-					<button
-						matSuffix
-						mat-icon-button
-						type="button"
-						aria-label="Limpar"
-						(click)="limparTexto()"
-					>
-						<mat-icon>close</mat-icon>
-					</button>
-				}
-			</mat-form-field>
+        @if (form.get('texto')?.value) {
+          <button
+            matSuffix
+            mat-icon-button
+            type="button"
+            (click)="limparTexto()"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
 
-      <mat-form-field class="home__field" appearance="outline">
-				<mat-label>Tipo de imagem</mat-label>
+      <!-- SELECT -->
+      <mat-form-field class="home__field w-full" appearance="outline">
+        <mat-label>Tipo de imagem</mat-label>
 
-				<mat-select formControlName="tipo">
-					<mat-option value="aleatorio">Aleatório</mat-option>
-					<mat-option value="gif">GIF</mat-option>
-					<mat-option value="texto">Texto</mat-option>
-				</mat-select>
+        <mat-select formControlName="tipo">
+          <mat-option value="aleatorio">Aleatório</mat-option>
+          <mat-option value="img">Imagem</mat-option>
+          <mat-option value="gif">GIF</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-			</mat-form-field>
-
+      <!-- BOTÃO -->
       <button
         type="submit"
-        class="home__button"
+        class="home__button w-full"
         [disabled]="isBlocked"
       >
         {{ botaoLabel }}
@@ -58,27 +66,38 @@
     </form>
 
     <!-- RESULTADO -->
-    <div class="home__resultado">
+    <div class="home__resultado flex items-center justify-center">
 
-      @if (estado === 'inicial') {
-        <div class="home__placeholder">
-          Sua imagem aparecerá aqui
-        </div>
-      }
+      <!-- container fixo -->
+      <div class="w-full h-[260px] flex items-center justify-center">
 
-      @if (estado === 'carregando') {
-        <div class="home__loading">
-          <img src="/gif/loading-cat.gif" alt="Carregando ..." />
-        </div>
-      }
+        @if (estado === 'inicial') {
+          <div class="home__placeholder text-center">
+            Sua imagem aparecerá aqui!
+          </div>
+        }
 
-      @if (estado === 'sucesso' || estado === 'cooldown') {
-        <img
-          [src]="imagemUrl"
-          alt="Imagem gerada"
-          class="home__imagem"
-        />
-      }
+        @if (estado === 'carregando') {
+          <mat-spinner diameter="50"></mat-spinner>
+        }
+
+       @if (imagemUrl) {
+          <img
+            alt="Imagem gerada"
+            [src]="imagemUrl"
+            (load)="onImageLoad()"
+            (error)="onImageError()"
+            class="home__imagem transition-opacity duration-500"
+          />
+        }
+
+        @if (estado === 'erro') {
+          <div class="text-red-400 text-sm text-center">
+            Falha ao carregar imagem!
+          </div>
+        }
+
+      </div>
 
     </div>
 
