@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CataasRequest } from '../../shared/interfaces/cataas.interface';
+import { TipoImagem } from '../../shared/interfaces/home.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -8,14 +9,17 @@ export class CataasService {
   private readonly baseUrl = 'https://cataas.com/cat';
 
   public gerarImagem(request: CataasRequest): string {
-    const { texto, tipo } = request;
+    let { texto, tipo } = request;
     const caminhos: string[] = [];
+
+    // gerando tipo aleatorio
+    if(tipo === 'aleatorio') tipo = this.gerarTipoAleatorio(tipo);
 
     // Adiciona o segmento gif
     if (tipo === 'gif')
       caminhos.push('gif');
 
-    // Se tiver texto, adicionamos /says/texto, na qual a API suporta /cat/says/oi e /cat/gif/says/oi
+    // Se tiver texto, add /says/texto, na qual a API suporta /cat/says/oi e /cat/gif/says/oi
     if (texto?.trim())
       caminhos.push('says', encodeURIComponent(texto.trim()));
 
@@ -26,5 +30,9 @@ export class CataasService {
     finalUrl.searchParams.set('t', Date.now().toString());
 
     return finalUrl.toString();
+  }
+
+  private gerarTipoAleatorio(sayOrGif: string): TipoImagem {
+    return Math.random() > 0.5 ? 'img' : 'gif';
   }
 }

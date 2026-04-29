@@ -69,7 +69,7 @@
     <div class="home__resultado flex items-center justify-center">
 
       <!-- container fixo -->
-      <div class="w-full h-[260px] flex items-center justify-center">
+      <div class="w-full h-[260px] flex items-center justify-center  p-2">
 
         @if (estado === 'inicial') {
           <div class="home__placeholder text-center">
@@ -81,13 +81,12 @@
           <mat-spinner diameter="50"></mat-spinner>
         }
 
-       @if (imagemUrl) {
+        @if (imagemUrl) {
           <img
             alt="Imagem gerada"
             [src]="imagemUrl"
-            (load)="onImageLoad()"
             (error)="onImageError()"
-            class="home__imagem transition-opacity duration-500"
+            class="home__imagem transition-opacity duration-500 mx-2"
           />
         }
 
