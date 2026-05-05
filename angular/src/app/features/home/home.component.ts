@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef  } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, OnInit  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // material
@@ -38,7 +38,7 @@ import { interval } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
 
   // private
   private intervalId: any;
@@ -52,6 +52,12 @@ export class HomeComponent {
   
   constructor(private fb: FormBuilder,  private changeDetectorRef: ChangeDetectorRef) {
     this.gerarForm();
+  }
+
+  ngOnInit(): void {
+
+    if(this.cooldownRestante != null)
+      this.controlStateCooldown();
   }
 
   // GETTERS
@@ -69,67 +75,19 @@ export class HomeComponent {
           return 'GERAR';
       }
     }
+
+    get cooldownRestante(): string | null {
+      return localStorage.getItem('cooldownFim');
+    }
   // -- FIM, GETTERS
-
-  // PUBLIC
-    public onSubmit(): void {
-      if (this.form.invalid || this.isBlocked) return;
-
-      this.estado = 'carregando';
-
-      const img = new Image();
-      const payload: CataasRequest = this.form.value;
-
-      if(payload.tipo === 'aleatorio') payload.tipo = Math.random() > 0.5 ? 'img' : 'gif';
-
-      const url = this._cataasService.gerarImagem(payload);
-
-      // Gif nn usa preload
-      if (payload.tipo === 'gif') {
-        this.imagemUrl = url;
-        return;
-      }
-      else {
-        img.onload = () => { this.imagemUrl = url; };
-        img.src = url;
-      }
-
-      img.onerror = () => {
-        this.onImageError();
-      };
-
-      this.iniciarCooldown();
-    }
-
-    public limparTexto(): void {
-      this.form.get('texto')?.setValue('');
-    }
-
-    public onImageError(): void {
-      this.estado = 'erro';
-      this.imagemUrl = null;
-    }
-  // -- FIM, PUBLIC
-
+  
   // PRIVATE METHODS
     private iniciarCooldown(): void {
-      
-      this.cooldown = 30;
-      this.estado = 'cooldown';
-      
-      const sub = interval(1000).subscribe(
-        () => {
+      const tempoFinal = Date.now() + (30 * 1000);
 
-          this.cooldown--;
-          this.changeDetectorRef.detectChanges();
+      localStorage.setItem('cooldownFim', tempoFinal.toString());
 
-          if (this.cooldown <= 0) {
-          
-            this.resetState();
-            sub.unsubscribe();
-          }
-        }
-      );
+      this.iniciarRetomarCooldown(tempoFinal);
     }
 
     private gerarForm(): void {
@@ -150,12 +108,98 @@ export class HomeComponent {
       this.cooldown = 0;
       this.imagemUrl = null;
       this.estado = 'inicial';
+      localStorage.removeItem('cooldownFim');
 
       this.changeDetectorRef.detectChanges();
     }
+    
+    private controlStateCooldown(): void {
+      const tempoFinal = Number(this.cooldownRestante);
+
+      if (tempoFinal > Date.now()) 
+        this.iniciarRetomarCooldown(tempoFinal);
+      else 
+        localStorage.removeItem('cooldownFim');
+    }
+
+    private iniciarRetomarCooldown(tempoFinal: number): void {
+      this.estado = 'cooldown';
+
+      console.log('iniciarRetomarCooldown | tempoFinal', tempoFinal);
+
+      const sub = interval(1000).subscribe(() => {
+        const agora = Date.now();
+        const tempoRestante = Math.floor((tempoFinal - agora) / 1000);
+        
+        console.log('iniciarRetomarCooldown | tempoRestante', tempoRestante);
+
+        this.cooldown = tempoRestante > 0 ? tempoRestante : 0;
+
+        this.changeDetectorRef.detectChanges();
+
+        if (tempoRestante <= 0) {
+          localStorage.removeItem('cooldownFim');
+          this.resetState();
+          sub.unsubscribe();
+        }
+      });
+    }
   // -- FIM, PRIVATE METHODS
 
-  // Destrua o interval se o usuário sair da página
+  // PUBLIC
+    public onSubmit(): void {
+      if (this.form.invalid || this.isBlocked) return;
+
+      this.estado = 'carregando';
+
+      let payload: CataasRequest = this.form.value;
+
+      // aleatório
+      if (payload.tipo === 'aleatorio') {
+        payload = {
+          ...payload,
+          tipo: Math.random() > 0.5 ? 'img' : 'gif'
+        };
+      }
+
+      const url = this._cataasService.gerarImagem(payload);
+
+      // GIF direto (DOM controla load)
+      if (payload.tipo === 'gif') {
+        this.imagemUrl = url;
+        this.iniciarCooldown();
+
+        return;
+      }
+
+      // IMG preload
+      const img = new Image();
+
+      img.onload = () => {
+        this.imagemUrl = url;
+        this.estado = 'sucesso';
+        
+        this.iniciarCooldown();
+      };
+
+      img.onerror = () => {
+        this.onImageError();
+      };
+
+      img.src = url;
+    }
+
+    public limparTexto(): void {
+      this.form.get('texto')?.setValue('');
+    }
+
+    public onImageError(): void {
+      this.estado = 'erro';
+      this.imagemUrl = null;
+    }
+  // -- FIM, PUBLIC
+
+  // Destroi o interval se o usuário sair da página
   ngOnDestroy() {
     if (this.intervalId) clearInterval(this.intervalId);
   }
