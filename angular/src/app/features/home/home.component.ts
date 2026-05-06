@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef, OnInit  } from '@angular/core';
+import { Component, inject, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // material
@@ -20,7 +20,7 @@ import { EstadoHome } from '../../shared/interfaces/home.interface';
 import { CataasRequest } from '../../shared/interfaces/cataas.interface';
 
 // rxjs
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home.component',
@@ -38,169 +38,158 @@ import { interval } from 'rxjs';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   // private
-  private intervalId: any;
+  private cooldownSub?: Subscription;
   private readonly _cataasService = inject(CataasService);
 
   // public 
   public form!: FormGroup;
-  public cooldown: number = 0
+  public cooldown: number = 0;
   public imagemUrl: string | null = null;
   public estado: EstadoHome = 'inicial';
-  
-  constructor(private fb: FormBuilder,  private changeDetectorRef: ChangeDetectorRef) {
+
+  constructor(
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {
     this.gerarForm();
   }
 
   ngOnInit(): void {
-
-    if(this.cooldownRestante != null)
-      this.controlStateCooldown();
+    const saved = localStorage.getItem('cooldownFim');
+    if (saved) this.controlStateCooldown(Number(saved));
   }
 
+  ngOnDestroy(): void {
+    this.cooldownSub?.unsubscribe();
+  }
+
+  // ========================
   // GETTERS
-    get isBlocked(): boolean {
-      return (this.estado === 'carregando' || this.estado === 'cooldown');
+  // ========================
+  get isBlocked(): boolean {
+    return this.estado === 'carregando' || this.estado === 'cooldown';
+  }
+
+  get botaoLabel(): string {
+    switch (this.estado) {
+      case 'carregando':
+        return 'Gerando ...';
+      case 'cooldown':
+        return `Gerar Novamente Em: ${this.cooldown}s`;
+      default:
+        return 'GERAR';
     }
+  }
 
-    get botaoLabel(): string {
-      switch (this.estado) {
-        case 'carregando':
-          return 'Gerando ...';
-        case 'cooldown':
-          return `Gerar Novamente Em: ${this.cooldown}s`;
-        default:
-          return 'GERAR';
-      }
-    }
-
-    get cooldownRestante(): string | null {
-      return localStorage.getItem('cooldownFim');
-    }
-  // -- FIM, GETTERS
-  
-  // PRIVATE METHODS
-    private iniciarCooldown(): void {
-      const tempoFinal = Date.now() + (30 * 1000);
-
-      localStorage.setItem('cooldownFim', tempoFinal.toString());
-
-      this.iniciarRetomarCooldown(tempoFinal);
-    }
-
-    private gerarForm(): void {
-      this.form = this.fb.group({
-        texto: [
-          '',
-          [Validators.maxLength(30)]
-        ],
-        tipo: [
-          'aleatorio',
-          [Validators.required]
-        ]
-      });
-    }
-
-    private resetState(): void {
-      this.isBlocked;
-      this.cooldown = 0;
-      this.imagemUrl = null;
-      this.estado = 'inicial';
-      localStorage.removeItem('cooldownFim');
-
-      this.changeDetectorRef.detectChanges();
-    }
-    
-    private controlStateCooldown(): void {
-      const tempoFinal = Number(this.cooldownRestante);
-
-      if (tempoFinal > Date.now()) 
-        this.iniciarRetomarCooldown(tempoFinal);
-      else 
-        localStorage.removeItem('cooldownFim');
-    }
-
-    private iniciarRetomarCooldown(tempoFinal: number): void {
-      this.estado = 'cooldown';
-
-      console.log('iniciarRetomarCooldown | tempoFinal', tempoFinal);
-
-      const sub = interval(1000).subscribe(() => {
-        const agora = Date.now();
-        const tempoRestante = Math.floor((tempoFinal - agora) / 1000);
-        
-        console.log('iniciarRetomarCooldown | tempoRestante', tempoRestante);
-
-        this.cooldown = tempoRestante > 0 ? tempoRestante : 0;
-
-        this.changeDetectorRef.detectChanges();
-
-        if (tempoRestante <= 0) {
-          localStorage.removeItem('cooldownFim');
-          this.resetState();
-          sub.unsubscribe();
-        }
-      });
-    }
-  // -- FIM, PRIVATE METHODS
-
+  // ========================
   // PUBLIC
-    public onSubmit(): void {
-      if (this.form.invalid || this.isBlocked) return;
+  // ========================
+  public onSubmit(): void {
+    if (this.form.invalid || this.isBlocked) return;
 
-      this.estado = 'carregando';
+    this.estado = 'carregando';
 
-      let payload: CataasRequest = this.form.value;
+    let payload: CataasRequest = this.form.value;
 
-      // aleatório
-      if (payload.tipo === 'aleatorio') {
-        payload = {
-          ...payload,
-          tipo: Math.random() > 0.5 ? 'img' : 'gif'
-        };
-      }
-
-      const url = this._cataasService.gerarImagem(payload);
-
-      // GIF direto (DOM controla load)
-      if (payload.tipo === 'gif') {
-        this.imagemUrl = url;
-        this.iniciarCooldown();
-
-        return;
-      }
-
-      // IMG preload
-      const img = new Image();
-
-      img.onload = () => {
-        this.imagemUrl = url;
-        this.estado = 'sucesso';
-        
-        this.iniciarCooldown();
+    // aleatório
+    if (payload.tipo === 'aleatorio') {
+      payload = {
+        ...payload,
+        tipo: Math.random() > 0.5 ? 'img' : 'gif'
       };
-
-      img.onerror = () => {
-        this.onImageError();
-      };
-
-      img.src = url;
     }
 
-    public limparTexto(): void {
-      this.form.get('texto')?.setValue('');
+    const url = this._cataasService.gerarImagem(payload);
+
+    // GIF direto
+    if (payload.tipo === 'gif') {
+      this.imagemUrl = url;
+      this.iniciarCooldown();
+      return;
     }
 
-    public onImageError(): void {
-      this.estado = 'erro';
-      this.imagemUrl = null;
-    }
-  // -- FIM, PUBLIC
+    // IMG preload
+    const img = new Image();
 
-  // Destroi o interval se o usuário sair da página
-  ngOnDestroy() {
-    if (this.intervalId) clearInterval(this.intervalId);
+    img.onload = () => {
+      this.imagemUrl = url;
+      this.estado = 'sucesso';
+      this.iniciarCooldown();
+    };
+
+    img.onerror = () => this.onImageError();
+
+    img.src = url;
+  }
+
+  public limparTexto(): void {
+    this.form.get('texto')?.setValue('');
+  }
+
+  public onImageError(): void {
+    this.estado = 'erro';
+    this.imagemUrl = null;
+  }
+
+  // ========================
+  // PRIVATE
+  // ========================
+  private gerarForm(): void {
+    this.form = this.fb.group({
+      texto: ['', [Validators.maxLength(30)]],
+      tipo: ['aleatorio', [Validators.required]]
+    });
+  }
+
+  private iniciarCooldown(): void {
+    const tempoFinal = Date.now() + 30000;
+
+    localStorage.setItem('cooldownFim', tempoFinal.toString());
+
+    this.startCooldownTimer(tempoFinal);
+  }
+
+  private controlStateCooldown(tempoFinal: number): void {
+    if (tempoFinal > Date.now()) {
+      this.startCooldownTimer(tempoFinal);
+    } else {
+      localStorage.removeItem('cooldownFim');
+    }
+  }
+
+  private startCooldownTimer(tempoFinal: number): void {
+    this.estado = 'cooldown';
+
+    this.updateCooldown(tempoFinal);
+
+    this.cooldownSub?.unsubscribe();
+
+    this.cooldownSub = interval(1000).subscribe(() => {
+      this.updateCooldown(tempoFinal);
+
+      if(this.cooldown <= 0) this.resetState();
+      
+    });
+  }
+
+  private updateCooldown(tempoFinal: number): void {
+    const diff = tempoFinal - Date.now();
+    this.cooldown = diff > 0 ? Math.ceil(diff / 1000) : 0;
+
+    this.cdr.detectChanges();
+  }
+
+  private resetState(): void {
+    this.cooldownSub?.unsubscribe();
+    localStorage.removeItem('cooldownFim');
+
+    this.cooldown = 0;
+    this.imagemUrl = null;
+    this.estado = 'inicial';
+
+    this.cdr.detectChanges();
   }
 }
