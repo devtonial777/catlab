@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@import "./variables";
+@import "./reset";
+
+/* Estilização global */
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+}
+
+/* Layout principal */
+.app-layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.app-content {
+  flex: 1;
+}
+
+/* Utilitários */
+.primary-color {
+  color: var(--color-primary);
+}

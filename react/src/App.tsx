@@ -1,12 +1,13 @@
-// import { useState } from 'react'
-
+import { Header } from './components/header/header'
 
 function App() {
   return (
-    <div className="bg-zinc-900 text-white min-h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold">
-        React + Tailwind funcionando 🚀
-      </h1>
+    <div className="app-layout">
+      <Header />
+
+      <main className="app-content">
+        conteúdo
+      </main>
     </div>
   )
 }
