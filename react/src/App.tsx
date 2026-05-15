@@ -6,7 +6,7 @@ function App() {
       <Header />
 
       <main className="app-content">
-        conteúdo
+        Conteudo
       </main>
     </div>
   )
